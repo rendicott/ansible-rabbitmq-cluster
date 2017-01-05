@@ -2,6 +2,7 @@ rabbitmq
 ======
 
 This role configures RabbitMQ cluster. This playbook is derived from alexeymedvedchikov.rabbitmq but adds the ability to use FQDN.
+All props to https://github.com/alexey-medvedchikov/ansible-rabbitmq 
 
 Requirements
 ------------
