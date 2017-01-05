@@ -1,0 +1,34 @@
+---
+
+- include: hostsfile.yml
+
+- include: repository.yml
+  when: rabbitmq_use_upstream_repository and rabbitmq_cluster_loadbalancer == 'no'
+  tags: [repository,rabbitmq]
+
+- include: packages.yml
+  when: rabbitmq_cluster_loadbalancer == 'no'
+  tags: [packages,rabbitmq]
+
+- include: config-cluster.yml
+  when: rabbitmq_create_cluster == 'yes' and rabbitmq_cluster_loadbalancer == 'no'
+
+- include: config.yml
+  when: rabbitmq_cluster_loadbalancer == 'no'
+
+- include: service.yml
+  when: rabbitmq_cluster_loadbalancer == 'no'
+
+- include: cluster.yml
+  when: rabbitmq_create_cluster and (ansible_hostname != rabbitmq_cluster_master) and (ansible_fqdn != rabbitmq_cluster_master) and (rabbitmq_cluster_loadbalancer == 'no')
+
+- include: ha.yml
+  when: rabbitmq_create_cluster and rabbitmq_high_availability and (rabbitmq_cluster_loadbalancer == 'yes')
+
+- include: rabbitmq.yml
+  when: not rabbitmq_create_cluster or (ansible_hostname == rabbitmq_cluster_master) or (ansible_fqdn != rabbitmq_cluster_master) and (rabbitmq_cluster_loadbalancer == 'no')
+
+#- include: ha-enable.yml
+#  when: rabbitmq_create_cluster and rabbitmq_high_availability and (ansible_hostname == rabbitmq_cluster_master) and (ansible_fqdn == rabbitmq_cluster_master) and (rabbitmq_cluster_loadbalancer == 'no')
+
+- meta: flush_handlers

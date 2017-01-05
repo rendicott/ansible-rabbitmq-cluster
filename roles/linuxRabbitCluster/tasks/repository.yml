@@ -1,0 +1,16 @@
+---
+# Setup installation repositories
+
+- name: import repository key
+  apt_key: url=https://www.rabbitmq.com/rabbitmq-release-signing-key.asc state=present
+  when: ansible_os_family == "Debian"
+
+- name: add apt repository
+  apt_repository: repo="deb http://www.rabbitmq.com/debian/ testing main"
+    state=present update_cache=yes
+  when: ansible_os_family == "Debian"
+
+- name: import repository key - CentOS
+  rpm_key: state=present key=https://www.rabbitmq.com/rabbitmq-release-signing-key.asc
+  when: ansible_os_family == "RedHat"
+

@@ -1,0 +1,10 @@
+- name: apply rabbitmq cluster to group of 4 boxes
+  hosts: "{{ machineName  }}"
+  gather_facts: true
+  connection: smart
+  remote_user: root
+  vars:
+    - hostips: "{% for host in groups[machineName] %}{% if hostvars[host].rabbitmq_cluster_loadbalancer is not defined %}{{ hostvars[host].ansible_default_ipv4.address }} {% endif %}{% endfor %}"
+    - allips: "{% for host in groups[machineName] %}{{ hostvars[host].ansible_default_ipv4.address }} {% endfor %}"
+  roles:
+    - linuxRabbitCluster

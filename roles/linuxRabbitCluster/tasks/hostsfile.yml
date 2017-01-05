@@ -1,0 +1,7 @@
+---
+- name: template hosts file
+  template: src=../templates/hosts dest=/etc/hosts
+
+- name: make sure firewalld is stopped and disabled
+  service: name=firewalld enabled=no state=stopped
+...

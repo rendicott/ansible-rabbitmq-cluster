@@ -1,0 +1,5 @@
+---
+- name: run high availability command on master
+  command: rabbitmqctl set_policy -p / ha-all "" '{"ha-mode":"all","ha-sync-mode":"automatic"}'
+  when: rabbitmq_create_cluster and rabbitmq_high_availability
+...

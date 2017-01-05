@@ -1,0 +1,13 @@
+---
+- name: ensure package haproxy installed
+  yum: name=haproxy state=present
+
+- name: make sure haproxy is stopped
+  service: name=haproxy state=stopped
+
+- name: template haproxy.cfg
+  template: src=../templates/haproxy.cfg dest=/etc/haproxy/haproxy.cfg
+
+- name: make sure haproxy is started
+  service: name=haproxy state=started
+...

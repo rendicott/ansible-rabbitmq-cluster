@@ -1,0 +1,34 @@
+---
+# Install required packages
+
+- name: install required packages
+  apt: pkg={{ item }} state=present
+  with_items:
+    - rabbitmq-server
+  when: ansible_os_family == "Debian"
+
+- name: install ssl-cert
+  apt: pkg=ssl-cert state=present
+  when: rabbitmq_ssl and rabbitmq_ssl_use_snakeoil_cert
+
+- name: make sure erlang is installed - CentOS
+  when: ansible_os_family == "RedHat"
+  yum: name=erlang state=present
+
+- name: download package - CentOS
+  when: ansible_os_family == "RedHat"
+  get_url: url={{ item }} dest=/tmp/
+  with_items:
+    - http://www.rabbitmq.com/releases/rabbitmq-server/v3.6.0/rabbitmq-server-3.6.0-1.noarch.rpm
+
+- name: install downloaded package
+  when: ansible_os_family == "RedHat"
+  yum: name=/tmp/rabbitmq-server-3.6.0-1.noarch.rpm state=present
+
+- name: make sure rabbitmq-server service is enabled
+  service: name=rabbitmq-server enabled=yes
+
+- name: add rabbitmq user to the ssl-cert group
+  user: name=rabbitmq append=yes groups=ssl-cert
+  when: rabbitmq_ssl and rabbitmq_ssl_use_snakeoil_cert
+
